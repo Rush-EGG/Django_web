@@ -7,6 +7,10 @@ class Department(models.Model):
     # 部门表
     title = models.CharField(verbose_name='标题', max_length=32)
 
+    # 定制了print(Department)时显示的内容是部门的名称
+    def __str__(self):
+        return self.title
+
 
 class UserInfo(models.Model):
     # 员工表
@@ -30,6 +34,6 @@ class UserInfo(models.Model):
     Django有个机制，凡是这种与其他表有约束的列，均会在定义的列名后加上"_id"
     '''
     # 如果需要级联删除，那么写上on_delete=models.CASCADE
-    depart = models.ForeignKey(to='Department', to_field='id', on_delete=models.CASCADE)
+    depart = models.ForeignKey(to='Department', to_field='id', on_delete=models.CASCADE, verbose_name="部门")
     # 如果置空，那么首先这一列需要满足为可空
     # depart = models.ForeignKey(to='Department', to_field='id',null=True, blank=True, on_delete=models.SET_NULL)

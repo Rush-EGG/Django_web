@@ -13,15 +13,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
 from django.urls import path
 from app01 import views
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    # 部门管理
     path('depart/list/', views.depart_list),
     path('depart/add/', views.depart_add),
     path('depart/delete/', views.depart_delete),
     # 以后在访问edit页面时，必须以http://127.0.0.1:8000/depart/1/edit/这样的形式，即中间夹个数字
     path('depart/<int:nid>/edit/', views.depart_edit),
+
+    # 用户管理
+    path('user/list/', views.user_list),
+    path('user/add/', views.user_add),
+    path('user/model/form/add/', views.user_model_form_add)
 ]
