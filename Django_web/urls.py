@@ -15,7 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from app01 import views
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    # path('admin/', admin.site.urls),
+    path('depart/list/', views.depart_list),
+    path('depart/add/', views.depart_add),
+    path('depart/delete/', views.depart_delete),
+    # 以后在访问edit页面时，必须以http://127.0.0.1:8000/depart/1/edit/这样的形式，即中间夹个数字
+    path('depart/<int:nid>/edit/', views.depart_edit),
 ]
