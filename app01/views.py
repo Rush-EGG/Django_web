@@ -133,3 +133,33 @@ def user_model_form_add(request):
         # 校验失败，在页面上显示错误信息
         # print(form.errors)
         return render(request, 'user_model_form_add.html', {"form": form})
+
+
+def user_edit(request, nid):
+    # 编辑用户
+    # 先得到修改的是哪一个用户
+    row_object = models.UserInfo.objects.filter(id=nid).first()
+    if request.method == "GET":
+        # print(row_object.name)
+        # 通过instance来确认现在编辑的是哪一名用户
+        form = UserModelForm(instance=row_object)
+        return render(request, "user_edit.html", {"form": form})
+
+    # 如果用户是POST请求
+    # 直接用ModelForm来拿到用户Post提交的信息，第二个参数是为了确定对哪一个用户进行更新
+    form = UserModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        '''form.save()默认保存的是用户输入的内容
+        如果想要它保存一些其他的字段
+        可以这样来写：form.instance.字段名 = 值
+        例如，来保存"修改时间"等一系列透明的信息
+        '''
+        return redirect('/user/list/')
+    return render(request, 'user_edit.html', {"form": form})
+
+
+def user_delete(request, nid):
+    models.UserInfo.objects.filter(id=nid).delete()
+
+    return redirect('/user/list')
