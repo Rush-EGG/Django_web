@@ -10,6 +10,9 @@
             border-radius: 0;
         }
     </style>
+    {% block css %}
+        {# 用户在此处可以自定义css #}
+    {% endblock %}
 </head>
 <body>
 <nav class="navbar navbar-default">
@@ -27,6 +30,7 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
+                <li><a href="/admin/list">管理员</a></li>
                 <li><a href="/depart/list">部门管理</a></li>
                 <li><a href="/user/list">用户管理</a></li>
                 <li><a href="/pretty/list">靓号管理</a></li>
@@ -57,5 +61,8 @@
 
 <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1/js/bootstrap.min.js' %}"></script>
+{% block js %}
+    {# 用户在此处可以自定义js #}
+{% endblock %}
 </body>
 </html>

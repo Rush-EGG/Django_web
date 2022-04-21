@@ -14,27 +14,31 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from app01 import views
+from app01.views import admin, depart, user, pretty
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
+    # 管理员管理
+    path('admin/list/', admin.admin_list),
+    path('admin/add/', admin.admin_add),
+    path('admin/<int:nid>/edit/', admin.admin_edit),
+
     # 部门管理
-    path('depart/list/', views.depart_list),
-    path('depart/add/', views.depart_add),
-    path('depart/delete/', views.depart_delete),
+    path('depart/list/', depart.depart_list),
+    path('depart/add/', depart.depart_add),
+    path('depart/delete/', depart.depart_delete),
     # 以后在访问edit页面时，必须以http://127.0.0.1:8000/depart/1/edit/这样的形式，即中间夹个数字
-    path('depart/<int:nid>/edit/', views.depart_edit),
+    path('depart/<int:nid>/edit/', depart.depart_edit),
 
     # 用户管理
-    path('user/list/', views.user_list),
-    path('user/add/', views.user_add),
-    path('user/model/form/add/', views.user_model_form_add),
-    path('user/<int:nid>/edit/', views.user_edit),
-    path('user/<int:nid>/delete/', views.user_delete),
+    path('user/list/', user.user_list),
+    path('user/add/', user.user_add),
+    path('user/model/form/add/', user.user_model_form_add),
+    path('user/<int:nid>/edit/', user.user_edit),
+    path('user/<int:nid>/delete/', user.user_delete),
 
-    #     靓号管理
-    path('pretty/list/', views.pretty_list),
-    path('pretty/add/', views.pretty_add),
-    path('pretty/<int:nid>/edit/', views.pretty_edit),
-    path('pretty/<int:nid>/delete/', views.pretty_delete),
+    # 靓号管理
+    path('pretty/list/', pretty.pretty_list),
+    path('pretty/add/', pretty.pretty_add),
+    path('pretty/<int:nid>/edit/', pretty.pretty_edit),
+    path('pretty/<int:nid>/delete/', pretty.pretty_delete),
 ]
