@@ -111,3 +111,68 @@ def admin_edit(request, nid):
         return redirect('/admin/list/')
 
     return render(request, 'change.html', {"form": form, "title": title})
+
+
+def admin_delete(request, nid):
+    # 删除管理员
+    models.Admin.objects.filter(id=nid).delete()
+
+    return redirect('/admin/list/')
+
+
+class AdminResetModelForm(BootStrapModelForm):
+    confirm_password = forms.CharField(
+        label="确认密码",
+        widget=forms.PasswordInput
+    )
+
+    class Meta:
+        model = models.Admin
+        fields = ['password', 'confirm_password']
+        widgets = {
+            'password': forms.PasswordInput
+        }
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password')  # 得到第一次输入的密码
+        md5_pwd = md5(password)
+
+        # 去数据库找一下原密码经md5加密之后的值和现密码经md5加密后的值一不一样
+        exist = models.Admin.objects.filter(id=self.instance.pk, password=md5_pwd).exists()
+        if exist:
+            # print("存在！")
+            raise ValidationError("不能与之前的密码相同")
+
+        return md5_pwd
+
+    # 钩子函数
+    def clean_confirm_password(self):
+        # print(self.cleaned_data)
+        password = self.cleaned_data.get('password')  # 得到第一次输入的密码
+        confirm = md5(self.cleaned_data.get('confirm_password'))  # 确认的密码
+        if confirm != password:
+            raise ValidationError("密码不一致！")
+
+        # 返回的值会写入cleaned_data中，所以，对于clean_confirm_password函数返回的应该是confirm_password
+        return confirm
+
+
+def admin_reset(request, nid):
+    # 重置密码
+    # 如果对象存在，则获取，如果不存在，只能拿到NULL
+    row_object = models.Admin.objects.filter(id=nid).first()
+    if not row_object:
+        return render(request, 'error.html', {'msg': "对象不存在！"})
+
+    title = "重置密码 - {}".format(row_object.username)
+
+    if request.method == 'GET':
+        form = AdminResetModelForm()
+        return render(request, 'change.html', {'title': title, 'form': form})
+
+    form = AdminResetModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return redirect('/admin/list')
+
+    return render(request, 'change.html', {'title': title, 'form': form})
