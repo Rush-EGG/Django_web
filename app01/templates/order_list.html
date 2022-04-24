@@ -1,0 +1,86 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="container">
+        <div>
+            <input id="btnAdd" type="button" value="新建订单1" class="btn btn-primary">
+            <input type="button" value="新建订单2" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        </div>
+    </div>
+
+    <!-- 新建订单对话框 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">新建订单</h4>
+                </div>
+
+                <div class="modal-body">
+                    <form id="formAdd">
+                        {# 可以不需要crsf_token，因为是通过Ajax提交 #}
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label>{{ field.label }}</label>
+                                {{ field }}
+                                <span class="error-msg" style="color: red"></span>
+                            </div>
+                        {% endfor %}
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                    <button id="btnSave" type="button" class="btn btn-primary">提 交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        $(function () {
+            bindBtnAddEvent();
+            bindBtnSaveEvent();
+        })
+
+        function bindBtnAddEvent() {
+            $('#btnAdd').click(function () {
+                {# 点击新建按钮，显示对话框 #}
+                $('#myModal').modal('show');
+            })
+        }
+
+
+        function bindBtnSaveEvent() {
+            $('#btnSave').click(function () {
+
+                {#点击之前先清除所有的错误信息#}
+                $(".error-msg").empty()
+
+                {#alert("保存")#}
+                $.ajax({
+                    url: '/order/add/',
+                    type: 'post',
+                    data: $('#formAdd').serialize(),
+                    dataType: 'JSON',
+                    success: function (res) {
+                        {#console.log(res)#}
+                        if (res.status) {
+                            {# 返回了成功 #}
+                            alert("创建成功")
+                        } else {
+                            {# 把错误信息显示在对话框中 #}
+                            $.each(res.error, function (name, errorList) {
+                                $('#id_' + name).next().text(errorList[0]);
+                            })
+                        }
+                    }
+                })
+            })
+        }
+    </script>
+{% endblock %}
