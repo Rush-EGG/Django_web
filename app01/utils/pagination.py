@@ -4,6 +4,30 @@ import copy
 如果以后想要使用分页组件，那么要做以下几件事情
 1.根据情况筛选想要的数据，存放在queryset中
 2.实例化分页对象
+在视图函数中：
+    def pretty_list(request):
+
+        # 1.根据自己的情况去筛选自己的数据
+        queryset = models.PrettyNum.objects.all()
+
+        # 2.实例化分页对象
+        page_object = Pagination(request, queryset)
+
+        context = {
+            "queryset": page_object.page_queryset,  # 分完页的数据
+            "page_string": page_object.html()       # 生成页码
+        }
+        return render(request, '***.html', context)
+
+在HTML页面中
+
+    {% for obj in queryset %}
+        {{obj.xx}}
+    {% endfor %}
+
+    <ul class="pagination">
+        {{ page_string }}
+    </ul>
 """
 
 

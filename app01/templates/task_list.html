@@ -11,7 +11,7 @@
                         <div class="form-group">
                             <label>{{ field.label }}</label>
                             {{ field }}
-                        <span class="error-msg" style="color: red"></span>
+                            <span class="error-msg" style="color: red"></span>
                         </div>
                     {% endfor %}
 
@@ -19,7 +19,42 @@
                 </form>
             </div>
         </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
+                任务列表
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>标题</th>
+                    <th>级别</th>
+                    <th>负责人</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for obj in queryset %}
+                    <tr>
+                        <th>{{ obj.id }}</th>
+                        <td>{{ obj.title }}</td>
+                        <td> {{ obj.get_level_display }} </td>
+                        <td> {{ obj.user.username }} </td>
+                        <td>
+                            <a class="btn btn-primary btn-xs" href="#">编辑</a>
+                            <a class="btn btn-danger btn-xs" href="#">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <ul class="pagination">
+            {{ page_string }}
+        </ul>
 
+        <div style="height: 300px"></div>
         <hr>
         <h1>Ajax学习</h1>
 
@@ -110,6 +145,7 @@
         function bindBtnAddEvent() {
             $('#btnAdd').click(function () {
 
+                {# 清空错误请求 #}
                 $('.error-msg').empty();
 
                 $.ajax({
@@ -118,11 +154,13 @@
                     data: $("#formAdd").serialize(),
                     dataType: 'JSON',
                     success: function (res) {
-                        if(res.status){
+                        if (res.status) {
                             alert("添加成功！");
-                        }else{
+                            {# 用js实现页面的刷新 #}
+                            location.reload();
+                        } else {
                             {#console.log(res.error)#}
-                            $.each(res.error, function(name, data){
+                            $.each(res.error, function (name, data) {
                                 {#console.log(name, data)#}
                                 $('#id_' + name).next().text(data[0])
                             })
