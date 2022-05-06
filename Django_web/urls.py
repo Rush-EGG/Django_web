@@ -14,7 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from app01.views import admin, depart, user, pretty, account, task, order
+from app01.views import admin, depart, user, pretty, account, task, order, chart
 
 urlpatterns = [
     # 管理员管理
@@ -57,4 +57,12 @@ urlpatterns = [
     # 订单管理
     path('order/list/', order.order_list),
     path('order/add/', order.order_add),
+    path('order/delete/', order.order_delete),
+    path('order/detail/', order.order_detail),
+    path('order/edit/', order.order_edit),
+
+    # 数据统计
+    path('chart/list/', chart.chart_list),
+    path('chart/bar/', chart.chart_bar),
+    path('chart/pie/', chart.chart_pie),
 ]

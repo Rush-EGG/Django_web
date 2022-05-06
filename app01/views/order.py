@@ -47,3 +47,62 @@ def order_add(request):
         return JsonResponse({'status': True})
 
     return JsonResponse({'status': False, 'error': form.errors})
+
+
+def order_delete(request):
+    # 删除订单
+    uid = request.GET.get('uid')
+    exists = models.Order.objects.filter(id=uid).exists()
+    if not exists:
+        return JsonResponse({'status': False, 'error': "删除失败！数据不存在"})
+
+    models.Order.objects.filter(id=uid).delete()
+    return JsonResponse({'status': True})
+
+
+def order_detail(request):
+    # 根据id获取订单信息
+    # 方式1
+    # uid = request.GET.get('uid')
+    # row_object = models.Order.objects.filter(id=uid).first()
+    # if not row_object:
+    #     return JsonResponse({'status': False, 'error': "数据不存在!"})
+    #
+    # result = {
+    #     'status': True,
+    #     'data': {
+    #         'title': row_object.title,
+    #         'price': row_object.price,
+    #         'status': row_object.status
+    #     }
+    # }
+    # return JsonResponse(result)
+
+    # 方式2
+    uid = request.GET.get('uid')
+    # 通过.values().first()可以直接得到字典
+    row_dict = models.Order.objects.filter(id=uid).values('title', 'price', 'status').first()
+    if not row_dict:
+        return JsonResponse({'status': False, 'error': "数据不存在!"})
+
+    result = {
+        'status': True,
+        'data': row_dict
+    }
+    return JsonResponse(result)
+
+
+@csrf_exempt
+def order_edit(request):
+    # 编辑订单
+    uid = request.GET.get('uid')
+    row_object = models.Order.objects.filter(id=uid).first()
+    if not row_object:
+        return JsonResponse({'status': False, 'tips': "数据不存在!"})
+
+    form = OrderModelForm(data=request.POST, instance=row_object)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'status': True})
+
+    return JsonResponse({'status': False, 'error': form.errors})
