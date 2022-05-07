@@ -94,3 +94,19 @@ class Order(models.Model):
     status = models.SmallIntegerField(verbose_name="状态", choices=status_choices, default=1)
 
     admin = models.ForeignKey(verbose_name="管理员", to='Admin', on_delete=models.CASCADE)
+
+
+class Boss(models.Model):
+    # 老板
+    name = models.CharField(verbose_name="姓名", max_length=32)
+    age = models.IntegerField(verbose_name="年龄")
+    img = models.CharField(verbose_name="头像", max_length=128)
+
+
+class City(models.Model):
+    # 城市
+    name = models.CharField(verbose_name="名称", max_length=32)
+    count = models.IntegerField(verbose_name="人口")
+    # 本质上FileField也是CharField，多了一个django内部帮你做保存的功能
+    # upload_to会帮你将文件保存到media文件夹下某一文件夹
+    img = models.FileField(verbose_name="Logo", max_length=128, upload_to='city/')
